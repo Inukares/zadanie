@@ -1,9 +1,3 @@
-// symbol	STRING	YES	
-// interval	ENUM	YES	
-// startTime	LONG	NO	
-// endTime	LONG	NO	
-// timeZone	STRING	NO	Default: 0 (UTC)
-// limit	INT	NO	Default: 500; Maximum: 1000.
 import axios from "axios";
 
 type Interval = 
@@ -19,10 +13,21 @@ type Interval =
   // 
 
 
-// only assuming that this data is always correct. Realistically should verify data coming from endpoint with zod for instance.
-const mapArrayToMetric = (array: number[]) => {
+type Metrics = {
+  open: number | string;
+  high: number | string;
+  low: number | string;
+  close: number | string;
+  volume: number | string;
+  closeTime: number | string;
+}
 
-  const [open,high,low,close,volume,closeTime] = array;
+export type KlinesResponse = Array<Array<number | string>>;
+
+// only assuming that this data is always correct. Realistically should verify data coming from endpoint with zod for instance.
+export const mapArrayToMetric = (tradingData: (number | string)[]): Metrics => {
+
+  const [open,high,low,close,volume,closeTime] = tradingData;
   return {
     open,
     high,
@@ -30,13 +35,17 @@ const mapArrayToMetric = (array: number[]) => {
     close,
     volume,
     closeTime
-  }
+  } as Metrics // this can be a lie, look coment above the funciton
 }
 
+export const calculatePriceChange = (marketPriceData: KlinesResponse) => {
+  const metrics = marketPriceData.map(mapArrayToMetric);
+  return metrics;
+}
 export class BinanceAPI {
 	private readonly URL = "https://api.binance.com"
 
-	async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}) {
+	async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
 		const { startTime, endTime } = timeRange || {};
 
 		// actual handling would depend on ap architecture
@@ -47,11 +56,12 @@ export class BinanceAPI {
 		const baseUrl = `${this.URL}/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
 
 		if(startTime && endTime) {
-			return await axios.get(`${baseUrl}&startTime=${startTime}&endTime=${endTime}`);
+			const response = await axios.get(`${baseUrl}&startTime=${startTime}&endTime=${endTime}`);
+      return response.data as Array<Array<number>>;
 		}
 
 		const response = await axios.get(`${baseUrl}`);
-		return response.data;
+		return response.data as Array<Array<number>>;
 	}
 
 }
