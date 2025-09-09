@@ -1,6 +1,6 @@
-import { BinanceAPI } from "./api/binance";
-import { calculateDeltaChange } from "./api/calculations";
-import { formatPrice, mapResponseToKlines } from "./api/mappers";
+import { BinanceAPI } from "./api/binance/binance";
+import { calculateDeltaChange } from "./api/binance/calculations";
+import { formatPrice, mapResponseToKlines } from "./api/binance/mappers";
 
 console.log("Hello via Bun!");
 
