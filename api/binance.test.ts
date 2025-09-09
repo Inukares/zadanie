@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test";
 import { BinanceAPI } from "./binance";
-import { mapResponseToKlines } from "./mappers";
+import { formatPrice, mapResponseToKlines } from "./mappers";
 import { calculateDeltaChange } from "./calculations";
 
 const mockData = [
@@ -127,6 +127,163 @@ describe("Binance API", () => {
 
 	// would test this with more time
 	it.skip('calculate delta change with missing data', () => {})
+
+	it('get formatted klines', async() => {
+		const binanceAPI = new BinanceAPI();
+		const mockKlines = mockData.map(mapResponseToKlines)
+		const exchangeInfo = await binanceAPI.getExchangeInfo({baseAsset: 'BTC', quoteAsset: 'USDC'})
+		const formattedKlines = mockKlines.map(kline => ({
+			...kline,
+			low: formatPrice(kline.low, exchangeInfo.quotePrecision),
+			high: formatPrice(kline.high, exchangeInfo.quotePrecision),
+			close: formatPrice(kline.close, exchangeInfo.quotePrecision),
+		}))
+
+		const expectedKlines = [
+			{
+				open: 1757403600000,
+				high: "$113,075.05",
+				low: "$113,085.40",
+				close: "$112,905.81",
+				volume: 112905.81,
+				closeTime: 61.11239,
+			}, {
+				open: 1757403900000,
+				high: "$112,905.81",
+				low: "$112,984.00",
+				close: "$112,753.61",
+				volume: 112980,
+				closeTime: 110.85656,
+			}, {
+				open: 1757404200000,
+				high: "$112,979.03",
+				low: "$113,018.15",
+				close: "$112,957.22",
+				volume: 113005.28,
+				closeTime: 52.03819,
+			}, {
+				open: 1757404500000,
+				high: "$113,005.27",
+				low: "$113,063.44",
+				close: "$112,951.97",
+				volume: 112991.11,
+				closeTime: 52.28648,
+			}, {
+				open: 1757404800000,
+				high: "$112,991.11",
+				low: "$113,108.00",
+				close: "$112,969.32",
+				volume: 113011.4,
+				closeTime: 58.23623,
+			}, {
+				open: 1757405100000,
+				high: "$113,011.40",
+				low: "$113,113.45",
+				close: "$112,977.11",
+				volume: 112989.41,
+				closeTime: 33.80266,
+			}, {
+				open: 1757405400000,
+				high: "$112,989.40",
+				low: "$113,062.50",
+				close: "$112,989.40",
+				volume: 113029.65,
+				closeTime: 22.08579,
+			}, {
+				open: 1757405700000,
+				high: "$113,029.65",
+				low: "$113,053.42",
+				close: "$112,916.41",
+				volume: 112922.81,
+				closeTime: 32.48943,
+			}, {
+				open: 1757406000000,
+				high: "$112,922.82",
+				low: "$113,000.00",
+				close: "$112,900.00",
+				volume: 113000,
+				closeTime: 35.55941,
+			}, {
+				open: 1757406300000,
+				high: "$112,999.99",
+				low: "$113,079.87",
+				close: "$112,978.01",
+				volume: 113079.86,
+				closeTime: 39.71164,
+			}, {
+				open: 1757406600000,
+				high: "$113,079.87",
+				low: "$113,176.51",
+				close: "$113,075.13",
+				volume: 113075.13,
+				closeTime: 64.15381,
+			}, {
+				open: 1757406900000,
+				high: "$113,075.13",
+				low: "$113,100.00",
+				close: "$113,007.96",
+				volume: 113071.51,
+				closeTime: 67.48428,
+			}, {
+				open: 1757407200000,
+				high: "$113,071.51",
+				low: "$113,071.51",
+				close: "$113,040.11",
+				volume: 113040.12,
+				closeTime: 22.12449,
+			}, {
+				open: 1757407500000,
+				high: "$113,040.11",
+				low: "$113,040.12",
+				close: "$112,930.00",
+				volume: 112930.01,
+				closeTime: 52.64736,
+			}, {
+				open: 1757407800000,
+				high: "$112,930.00",
+				low: "$112,931.44",
+				close: "$112,886.93",
+				volume: 112931.43,
+				closeTime: 50.46903,
+			}, {
+				open: 1757408100000,
+				high: "$112,931.44",
+				low: "$112,992.69",
+				close: "$112,931.43",
+				volume: 112992.69,
+				closeTime: 45.58755,
+			}, {
+				open: 1757408400000,
+				high: "$112,992.69",
+				low: "$113,000.00",
+				close: "$112,933.57",
+				volume: 112933.58,
+				closeTime: 21.91708,
+			}, {
+				open: 1757408700000,
+				high: "$112,933.58",
+				low: "$112,952.46",
+				close: "$112,923.01",
+				volume: 112923.01,
+				closeTime: 21.90035,
+			}, {
+				open: 1757409000000,
+				high: "$112,923.01",
+				low: "$112,941.32",
+				close: "$112,920.87",
+				volume: 112939.94,
+				closeTime: 52.84628,
+			}, {
+				open: 1757409300000,
+				high: "$112,939.95",
+				low: "$113,057.99",
+				close: "$112,939.94",
+				volume: 112975.28,
+				closeTime: 61.4596,
+			}
+		]
+		expect(formattedKlines).toEqual(expectedKlines)
+	})
 
 	// it('format the data', () => {})
 
