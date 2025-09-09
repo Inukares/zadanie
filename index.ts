@@ -1,6 +1,6 @@
 import { BinanceAPI } from "./api/binance";
 import { calculateDeltaChange } from "./api/calculations";
-import { mapResponseToKlines } from "./api/mappers";
+import { formatPrice, mapResponseToKlines } from "./api/mappers";
 
 console.log("Hello via Bun!");
 
@@ -15,6 +15,14 @@ const app = async () => {
 
 	const deltaChange = calculateDeltaChange(metrics)
 	console.log(deltaChange)
+
+	const formattedKlines = metrics.map(kline => ({
+		...kline,
+		low: formatPrice(kline.low, 2),
+		high: formatPrice(kline.high, 2),
+		close: formatPrice(kline.close, 2),
+	}))
+	console.log('formattedKlines', formattedKlines)
 
 }
 

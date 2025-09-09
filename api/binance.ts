@@ -1,8 +1,4 @@
 import axios from "axios";
-import { formatPrice, mapResponseToKlines } from "./mappers";
-
-// TODO: add binance api key and env.ts file with throwing if error is not present.
-// normally would have to ensure data is correct, add missing points for instance
 
 type Interval = 
   | '1s'
@@ -24,34 +20,13 @@ export type ExchangeInfoResponse = {
     filterType: string;
     minPrice?: string;
     maxPrice?: string;
-    tickSize?: string;    // Minimum price movement
+    tickSize?: string;    
   }>;
 }
-
-// format -> and it handles the formatting?
-
-// 
-
 export class BinanceAPI {
 	private readonly URL = "https://api.binance.com"
 
-  // could have a method that return a formatted values for the UI
-  // async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
-  //   const rawData = await this.fetchRawKlinesData({symbol, interval, timeRange, limit, timeZone});
-  //   const klines = rawData.map(mapResponseToKlines);
-  //   // const exchangeInfo = await this.getExchangeInfo({baseAsset: symbol, quoteAsset: 'USDC'});
-
-  //   // const formattedKlines = klines.map(kline => ({
-  //   //   ...kline,
-  //   //   open: formatPrice(kline.open, exchangeInfo.quotePrecision),
-  //   //   low: formatPrice(kline.low, exchangeInfo.quotePrecision),
-  //   //   high: formatPrice(kline.high, exchangeInfo.quotePrecision),
-  //   //   close: formatPrice(kline.close, exchangeInfo.quotePrecision),
-  //   // }));
-
-  //   return formattedKlines;
-  // }
-
+  // time zone not used, but could be passed to API
 	async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
 		const { startTime, endTime } = timeRange || {};
 
@@ -75,6 +50,22 @@ export class BinanceAPI {
     const response = await axios.get<ExchangeInfoResponse>(`${this.URL}/api/v3/exchangeInfo?symbol=${baseAsset}${quoteAsset}`);
     return response.data;
   }
+  // could have a method that return a formatted values for the UI
+  // async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
+  //   const rawData = await this.fetchRawKlinesData({symbol, interval, timeRange, limit, timeZone});
+  //   const klines = rawData.map(mapResponseToKlines);
+  //   // const exchangeInfo = await this.getExchangeInfo({baseAsset: symbol, quoteAsset: 'USDC'});
+
+  //   // const formattedKlines = klines.map(kline => ({
+  //   //   ...kline,
+  //   //   open: formatPrice(kline.open, exchangeInfo.quotePrecision),
+  //   //   low: formatPrice(kline.low, exchangeInfo.quotePrecision),
+  //   //   high: formatPrice(kline.high, exchangeInfo.quotePrecision),
+  //   //   close: formatPrice(kline.close, exchangeInfo.quotePrecision),
+  //   // }));
+
+  //   return formattedKlines;
+  // }
 }
 
 
