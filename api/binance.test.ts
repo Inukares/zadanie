@@ -125,6 +125,8 @@ describe("Binance API", () => {
 		expect(deltaChange).toBe(0.0003022873667883403)
 	})
 
+	// would test this with more time
+	it.skip('calculate delta change with missing data', () => {})
 
 	// it('format the data', () => {})
 

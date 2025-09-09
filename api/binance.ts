@@ -13,6 +13,20 @@ type Interval =
 
 export type KlinesResponse = Array<Array<number | string>>;
 
+export type ExchangeInfoResponse = { 
+  symbol: string;
+  baseAsset: string;      // e.g., "BTC"
+  quoteAsset: string;     // e.g., "USDT"
+  quotePrecision: number;  // Decimal places for quote asset
+  baseAssetPrecision: number;  // Decimal places for base asset
+  filters: Array<{
+    filterType: string;
+    minPrice?: string;
+    maxPrice?: string;
+    tickSize?: string;    // Minimum price movement
+  }>;
+}
+
 export class BinanceAPI {
 	private readonly URL = "https://api.binance.com"
 
@@ -35,6 +49,10 @@ export class BinanceAPI {
 		return response.data as Array<Array<number>>;
 	}
 
+  async getExchangeInfo({baseAsset, quoteAsset = 'USDC'}: {baseAsset: string, quoteAsset: string}): Promise<ExchangeInfoResponse> {
+    const response = await axios.get<ExchangeInfoResponse>(`${this.URL}/api/v3/exchangeInfo?symbol=${baseAsset}${quoteAsset}`);
+    return response.data;
+  }
 }
 
 
