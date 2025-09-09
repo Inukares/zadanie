@@ -15,10 +15,28 @@ type Interval =
   | '1M';
 
 
-class BinanceAPI {
+  // changes -> price change -> first half's avergae price vs second half's average price?
+  // 
+
+
+// only assuming that this data is always correct. Realistically should verify data coming from endpoint with zod for instance.
+const mapArrayToMetric = (array: number[]) => {
+
+  const [open,high,low,close,volume,closeTime] = array;
+  return {
+    open,
+    high,
+    low,
+    close,
+    volume,
+    closeTime
+  }
+}
+
+export class BinanceAPI {
 	private readonly URL = "https://api.binance.com"
 
-	async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone="0"} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}) {
+	async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}) {
 		const { startTime, endTime } = timeRange || {};
 
 		// actual handling would depend on ap architecture
