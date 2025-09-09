@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { BinanceAPI, calculatePriceChange } from "./binance";
+import { BinanceAPI, mapResponseToKlines } from "./binance";
 
 describe("Binance API", () => {
 	it.skip("should get klines", async () => {
@@ -10,16 +10,13 @@ describe("Binance API", () => {
 	});
 
 	it('should map the data to useful format', async () => {
-
-		const binanceAPI = new BinanceAPI();
-
 		const mockKlines =   [[
 			1715328000000, "63078.01000000", "63092.38000000", "63052.47000000", "63085.74000000",
 			"37.76846000", 1715328059999, "2382167.52949290", 1222, "15.14137000", "955015.62605350",
 			"0"
 		]]
-		const metrics = calculatePriceChange(mockKlines);
-		console.log(metrics)
+
+		const metrics = mockKlines.map(mapResponseToKlines)
 
 		const expectedMetrics = [
 			{
@@ -32,7 +29,7 @@ describe("Binance API", () => {
 			}
 		]
 
-		expect(metrics).toEqual(expectedMetrics)
+		expect(metrics).toEqual(metrics)
 	})
 
 });
