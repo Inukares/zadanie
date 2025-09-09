@@ -35,23 +35,24 @@ export type ExchangeInfoResponse = {
 export class BinanceAPI {
 	private readonly URL = "https://api.binance.com"
 
-  async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
-    const rawData = await this.fetchRawKlinesData({symbol, interval, timeRange, limit, timeZone});
-    const klines = rawData.map(mapResponseToKlines);
-    // const exchangeInfo = await this.getExchangeInfo({baseAsset: symbol, quoteAsset: 'USDC'});
+  // could have a method that return a formatted values for the UI
+  // async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
+  //   const rawData = await this.fetchRawKlinesData({symbol, interval, timeRange, limit, timeZone});
+  //   const klines = rawData.map(mapResponseToKlines);
+  //   // const exchangeInfo = await this.getExchangeInfo({baseAsset: symbol, quoteAsset: 'USDC'});
 
-    // const formattedKlines = klines.map(kline => ({
-    //   ...kline,
-    //   open: formatPrice(kline.open, exchangeInfo.quotePrecision),
-    //   low: formatPrice(kline.low, exchangeInfo.quotePrecision),
-    //   high: formatPrice(kline.high, exchangeInfo.quotePrecision),
-    //   close: formatPrice(kline.close, exchangeInfo.quotePrecision),
-    // }));
+  //   // const formattedKlines = klines.map(kline => ({
+  //   //   ...kline,
+  //   //   open: formatPrice(kline.open, exchangeInfo.quotePrecision),
+  //   //   low: formatPrice(kline.low, exchangeInfo.quotePrecision),
+  //   //   high: formatPrice(kline.high, exchangeInfo.quotePrecision),
+  //   //   close: formatPrice(kline.close, exchangeInfo.quotePrecision),
+  //   // }));
 
-    return formattedKlines;
-  }
+  //   return formattedKlines;
+  // }
 
-	private async fetchRawKlinesData({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
+	async getKlines({symbol, interval='1m', timeRange, limit = 20, timeZone} : {symbol: string, interval: Interval, timeRange?: { startTime: number, endTime: number }, limit?: number, timeZone?: string}): Promise<KlinesResponse> {
 		const { startTime, endTime } = timeRange || {};
 
 		// actual handling would depend on ap architecture
