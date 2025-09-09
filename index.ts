@@ -8,7 +8,7 @@ console.log("Hello via Bun!");
 const app = async () => {
 
 	const binanceAPI = new BinanceAPI();
-	const klines = await binanceAPI.getKlines({ symbol: "BTCUSDT", interval: "1m", timeRange: { startTime: 1715328000000, endTime: 1415328000000 }, limit: 20 });
+	const klines = await binanceAPI.getKlines({ symbol: "BTCUSDT", interval: "1m", timeRange: { startTime: 1757412019000, endTime: 1757412319000 }, limit: 20 });
 
 	const metrics = klines.map(mapResponseToKlines)
 	console.log('metrics', metrics)

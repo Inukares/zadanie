@@ -6,6 +6,7 @@ export const calculateDeltaChange = (klines: Klines[]): number => {
 
   // should probably skip missing data points
   if(!firstClose || !lastClose) {
+		console.warn('Missing data points');
     return 0
   }
 

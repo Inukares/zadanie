@@ -1,4 +1,4 @@
-import { describe, it, expect } from "bun:test";
+import { describe, it, expect, mock } from "bun:test";
 import { BinanceAPI } from "./binance";
 import { formatPrice, mapResponseToKlines } from "./mappers";
 import { calculateDeltaChange } from "./calculations";
@@ -88,11 +88,17 @@ const mockData = [
 ]
 
 describe("Binance API", () => {
-	it.skip("should get klines", async () => {
+
+
+	it("should get klines", async () => {
 		const binanceAPI = new BinanceAPI();
-		const klines = await binanceAPI.getKlines({ symbol: "BTCUSDT", interval: "5m", limit: 20  });
+		const getKlines = mock(binanceAPI.getKlines);
+		getKlines.mockResolvedValue(mockData);
+		const klines = await getKlines({ symbol: "BTCUSDT", interval: "5m", limit: 20  });
 		console.log(klines)
-		expect(klines).toBeDefined();
+		expect(klines).toEqual(mockData);
+
+		getKlines.mockRestore();
 	});
 
 	it('should map the data to useful format', async () => {
@@ -128,7 +134,7 @@ describe("Binance API", () => {
 	// would test this with more time
 	it.skip('calculate delta change with missing data', () => {})
 
-	it('get formatted klines', async() => {
+	it('get formatted data for the UI', async() => {
 		const binanceAPI = new BinanceAPI();
 		const mockKlines = mockData.map(mapResponseToKlines)
 		const exchangeInfo = await binanceAPI.getExchangeInfo({baseAsset: 'BTC', quoteAsset: 'USDC'})
@@ -284,7 +290,5 @@ describe("Binance API", () => {
 		]
 		expect(formattedKlines).toEqual(expectedKlines)
 	})
-
-	// it('format the data', () => {})
 
 });
